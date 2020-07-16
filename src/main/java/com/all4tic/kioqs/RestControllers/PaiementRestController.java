@@ -1,5 +1,6 @@
 package com.all4tic.kioqs.RestControllers;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +29,7 @@ import com.all4tic.kioqs.dao.ParutionDao;
 import com.all4tic.kioqs.dao.PayResponseDao;
 import com.all4tic.kioqs.dao.TransactionsDao;
 import com.all4tic.kioqs.dto.CheckResponseDto;
+import com.all4tic.kioqs.dto.GetPayResponse;
 import com.all4tic.kioqs.dto.PayResponse;
 import com.all4tic.kioqs.dto.TransactionsDto;
 import com.all4tic.kioqs.models.CheckParution;
@@ -38,6 +42,7 @@ import com.all4tic.kioqs.utilities.Code;
 import com.all4tic.kioqs.utilities.PaySettings;
 import com.all4tic.kioqs.utilities.Reponse;
 import com.all4tic.kioqs.utilities.Utility;
+
 
 @RestController
 @RequestMapping("/mobile/pay/")
@@ -105,6 +110,25 @@ public class PaiementRestController {
 		return null;
 		
 		
+	}
+	@PostMapping("/paiement/callback")
+	public Reponse getPaiement(@RequestBody GetPayResponse getPayResponse) {
+		Transactions trans = transactionsDao.findByCodetrans(getPayResponse.getIdentifier());
+		Reponse reponse = new Reponse();
+		if(trans != null) {
+			Payresponse  payres = new Payresponse();
+			payres.setDatepay(LocalDate.now());
+			payres.setMethodpay(getPayResponse.getPayment_method());
+			payres.setPayref(getPayResponse.getPayment_reference());
+			payres.setStatuspay(0);
+			payres.setTxreference(getPayResponse.getTx_reference());
+			payres.setTransactions(trans);
+			Payresponse  newpayres =payResponseDao.save(payres);
+			if((newpayres != null) && (newpayres.getStatuspay()==0)) {
+				
+			}
+		}
+		return reponse ;
 	}
 	
 }
