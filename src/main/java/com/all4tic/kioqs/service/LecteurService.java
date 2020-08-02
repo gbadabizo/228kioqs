@@ -1,5 +1,7 @@
 package com.all4tic.kioqs.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,14 @@ public class LecteurService {
 			return ldto;
 		}
 		return null;
+	}
+	public List<LecteurDto> listAbonnes(int status){
+		List<Lecteur> lecteurs = lecteurDao.findByStatus(status);
+		List<LecteurDto> lecteursDto =new ArrayList<>();
+		for(Lecteur l : lecteurs) {
+			lecteursDto.add(LecteurToLecteurDto(l));
+		}
+		return lecteursDto;
 	}
 	
 }
