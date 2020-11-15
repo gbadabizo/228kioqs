@@ -7,8 +7,8 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.Immutable;
 
-@Entity
-@Immutable
+@Entity 
+@Immutable 
 public class vtransactions {
  @Id
  private long idtransaction;

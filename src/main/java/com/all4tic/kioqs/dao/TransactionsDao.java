@@ -15,5 +15,5 @@ public interface TransactionsDao extends CrudRepository<Transactions, Long> {
 		Transactions findByParutionAndLecteurAndStatusPayAndStatus(Parution parution, Lecteur lecteur, int StatusPay, int status);
 		Transactions findByParutionAndLecteurAndStatusPay(Parution parution, Lecteur lecteur, int StatusPay);
 		Slice<Transactions> findAllByLecteur(Lecteur lecteur, Pageable pageable);
-		
+		Transactions findByCodetransAndStatusPayAndStatus(String codetrans, int statusPay,int status);
 }

@@ -15,9 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import com.all4tic.kioqs.dao.ParutionDao;
 import com.all4tic.kioqs.models.Agence;
+import com.all4tic.kioqs.models.JobCategorie;
+import com.all4tic.kioqs.models.Jobs;
+import com.all4tic.kioqs.models.News;
 import com.all4tic.kioqs.models.Parution;
+import com.all4tic.kioqs.models.Publicite;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
@@ -32,7 +37,123 @@ public class FileStorageServiceImpl implements FileStorageService {
 	      throw new RuntimeException("Could not initialize folder for upload!");
 	    }
 	  }
-
+	  @Override
+	  public void save(MultipartFile file, News news, int type, String filename) {
+		  // 1 = pdf file, 2 = image
+		  if(news !=null) {
+		
+			  Path categorieFolder=null;
+	    try {
+	    	if(type==1) {
+	    		categorieFolder = Paths.get("uploads/pdf/news/"+news.getCode().trim());
+	    	}
+	    		else {
+	    			categorieFolder = Paths.get("uploads/img/news/"+news.getCode().trim());
+	    		}
+	    	
+	    	if(!Files.exists(categorieFolder)) {
+	    		try {
+	                Files.createDirectories(categorieFolder);
+	            } catch (IOException e) {
+	                //fail to create directory
+	                e.printStackTrace();
+	            }
+	    	}
+	    String originFileName= file.getOriginalFilename();
+	    String extension = getExtensionByStringHandling(originFileName).get();
+	    String newFilename = filename+"."+extension.trim();
+	    Path newPath= Paths.get(categorieFolder+"/"+newFilename);
+	    if(Files.notExists(newPath)) {
+	        Files.copy(file.getInputStream(), categorieFolder.resolve(newFilename));
+	    }else {
+	    	boolean result = Files.deleteIfExists(newPath);
+	    	System.out.println("ecrasement de fichier : "+result);
+	    	if(result)
+	    	  Files.copy(file.getInputStream(), categorieFolder.resolve(newFilename));
+	    }
+	     
+	    } catch (Exception e) {
+	      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+	    }
+		  }
+	  }
+	  
+	  @Override
+	  public void save(MultipartFile file , Publicite publicite) {
+		  // 1 = pdf file, 2 = image
+		
+			  
+			  Path categorieFolder=null;
+	    try {
+	    	
+	    			categorieFolder = Paths.get("uploads/img/pubs");
+	    	
+	    	if(!Files.exists(categorieFolder)) {
+	    		try {
+	                Files.createDirectories(categorieFolder);
+	            } catch (IOException e) {
+	                //fail to create directory
+	                e.printStackTrace();
+	            }
+	    	}
+	    String originFileName= file.getOriginalFilename();
+	    String extension = getExtensionByStringHandling(originFileName).get();
+	    String newFilename = publicite.getCode()+"."+extension.trim();
+	    Path newPath= Paths.get(categorieFolder+"/"+newFilename);
+	    if(Files.notExists(newPath)) {
+	        Files.copy(file.getInputStream(), categorieFolder.resolve(newFilename));
+	    }else {
+	    	boolean result = Files.deleteIfExists(newPath);
+	    	System.out.println("ecrasement de fichier : "+result);
+	    	if(result)
+	    	  Files.copy(file.getInputStream(), categorieFolder.resolve(newFilename));
+	    }
+	     
+	    } catch (Exception e) {
+	      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+	    }
+		  
+	  }
+	  @Override
+	  public void save(MultipartFile file, Jobs jobs, int type) {
+		  // 1 = pdf file, 2 = image
+		  if(jobs !=null) {
+			  JobCategorie categorie = jobs.getJobCategorie();
+			  Path categorieFolder=null;
+	    try {
+	    	if(type==1) {
+	    		categorieFolder = Paths.get("uploads/pdf/"+categorie.getCode().trim());
+	    	}
+	    		else {
+	    			categorieFolder = Paths.get("uploads/img/"+categorie.getCode().trim());
+	    		}
+	    	
+	    	if(!Files.exists(categorieFolder)) {
+	    		try {
+	                Files.createDirectories(categorieFolder);
+	            } catch (IOException e) {
+	                //fail to create directory
+	                e.printStackTrace();
+	            }
+	    	}
+	    String originFileName= file.getOriginalFilename();
+	    String extension = getExtensionByStringHandling(originFileName).get();
+	    String newFilename = jobs.getCode()+"."+extension.trim();
+	    Path newPath= Paths.get(categorieFolder+"/"+newFilename);
+	    if(Files.notExists(newPath)) {
+	        Files.copy(file.getInputStream(), categorieFolder.resolve(newFilename));
+	    }else {
+	    	boolean result = Files.deleteIfExists(newPath);
+	    	System.out.println("ecrasement de fichier : "+result);
+	    	if(result)
+	    	  Files.copy(file.getInputStream(), categorieFolder.resolve(newFilename));
+	    }
+	     
+	    } catch (Exception e) {
+	      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+	    }
+		  }
+	  }
 	  @Override
 	  public void save(MultipartFile file, Parution parution, int type) {
 		  // 1 = pdf file, 2 = image
@@ -85,6 +206,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 	  public Resource load(String filename) {
 	    try {
 	      //Path file = root.resolve(filename);
+	    	System.out.println(filename);
 	    	Path file = Paths.get(filename);
 	      Resource resource = new UrlResource(file.toUri());
 

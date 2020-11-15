@@ -64,6 +64,7 @@ public class Transactions implements Serializable {
 		this.status = status;
 	}
 	
+
 	public int getStatusPay() {
 		return statusPay;
 	}
@@ -75,6 +76,13 @@ public class Transactions implements Serializable {
 	}
 	public void setIdtransaction(long idtransaction) {
 		this.idtransaction = idtransaction;
+	}
+	
+	public LocalDate getDateop() {
+		return dateop;
+	}
+	public void setDateop(LocalDate dateop) {
+		this.dateop = dateop;
 	}
 	
 	public String getCodetrans() {

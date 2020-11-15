@@ -15,12 +15,15 @@ import com.all4tic.kioqs.dao.ActivationDao;
 import com.all4tic.kioqs.dao.LecteurDao;
 import com.all4tic.kioqs.dto.LecteurDto;
 import com.all4tic.kioqs.dto.RequestLecteur;
+import com.all4tic.kioqs.dto.SMSRequest;
 import com.all4tic.kioqs.models.Activation;
 import com.all4tic.kioqs.models.Lecteur;
 import com.all4tic.kioqs.service.LecteurService;
 import com.all4tic.kioqs.utilities.Code;
 import com.all4tic.kioqs.utilities.Reponse;
+import com.all4tic.kioqs.utilities.SendSms2;
 import com.all4tic.kioqs.utilities.Utility;
+
 
 @RestController
 @RequestMapping("/mobile/suscribe/")
@@ -32,7 +35,8 @@ public class SuscribeRestController {
 	private LecteurDao lecteurDao;
 	@Autowired 
 	private ActivationDao activationDao;
-	
+	@Autowired 
+	private SendSms2 sendsms2 ;
 	@GetMapping("lecteur/{code}")
 	public ResponseEntity<LecteurDto>getLecteurByCode(@PathVariable("code") String code){
 		System.out.println("code: "+code);
@@ -74,7 +78,7 @@ public class SuscribeRestController {
             activation.setLecteur(l);
             activation.setCode(code);
          Activation newActivation=   activationDao.save(activation);
-          //  SendSms.send(SendSms.apiKey,atelier.getTelephone(),code,"TELAA",""); 
+         sendsms(l.getTelephone(),code);
          reponse.setCode(""+Code.SUCCESSFUL_CODE);
          reponse.setStatus(true);
          reponse.setMessage(Code.SUCCESSFUL_MESSAGE);
@@ -99,5 +103,16 @@ public class SuscribeRestController {
             reponse.setDatas(activation);
         }
         return  reponse;
+    }
+    public void sendsms(String telephone, String code) {
+    	String codepays = telephone.substring(0, 3);
+    	if(codepays.equals("228")) {
+    		SMSRequest smsRequest  = new SMSRequest();
+            smsRequest.setMobileNumbers(telephone);
+            smsRequest.setMessage(code);
+    		sendsms2.send(smsRequest);
+    	}else {
+    		 sendsms2.sendRemoteSMS(code, telephone);
+    	}
     }
 }

@@ -7,6 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.all4tic.kioqs.dao.LecteurDao;
 public class Utility {
+	//SMS ZEDEEKA
+		public final  static String	 APIKEY= "R0BQLoq55aTsoRXDEae3OKf8aQvHLSk0iu2lat5rPfo=";
+		public final  static String	CLIENTID ="7a36eb41-1115-4f2d-ac0b-e1d775e448f4";
+		public final  static String	URLSMS="http://dashboard.smszedekaa.com:6005/api/v2/SendSMS";
+	// EASY SMS 
+		public final  static String USERNAME= "edemedem2020";
+		public final  static String PASSWORD= "esm60779";
+		
+		public final  static String	URLEASYSMS="https://www.easysendsms.com/sms/bulksms-api/bulksms-api?";
 	@Autowired
 	private LecteurDao lecteurDao;
 	 public static int generateRandomDigits(int n) {

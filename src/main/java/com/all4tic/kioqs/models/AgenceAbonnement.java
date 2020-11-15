@@ -9,21 +9,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class AgenceAbonnement implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long idagabn ;
+	private int idagabn ;
 	private String code ;
 	private int montant ;
+	private int montantext;
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idagence")
 	private Agence agence;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idabon")
 	private Abonnement abonnement ;
 	private int status =1 ;
-	public AgenceAbonnement(long idagabn, String code, int montant, Agence agence, Abonnement abonnement, int status) {
+	public AgenceAbonnement(int idagabn, String code, int montant, Agence agence, Abonnement abonnement, int status) {
 		super();
 		this.idagabn = idagabn;
 		this.code = code;
@@ -32,14 +35,23 @@ public class AgenceAbonnement implements Serializable {
 		this.abonnement = abonnement;
 		this.status = status;
 	}
+	
+	public int getMontantext() {
+		return montantext;
+	}
+
+	public void setMontantext(int montantext) {
+		this.montantext = montantext;
+	}
+
 	public AgenceAbonnement() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public long getIdagabn() {
+	public int getIdagabn() {
 		return idagabn;
 	}
-	public void setIdagabn(long idagabn) {
+	public void setIdagabn(int idagabn) {
 		this.idagabn = idagabn;
 	}
 	public String getCode() {
@@ -54,6 +66,7 @@ public class AgenceAbonnement implements Serializable {
 	public void setMontant(int montant) {
 		this.montant = montant;
 	}
+	@JsonIgnore
 	public Agence getAgence() {
 		return agence;
 	}
